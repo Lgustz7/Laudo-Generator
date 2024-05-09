@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="entrada">
+    <p id="saida"></p>
+
+    <script>
+        // Obtém o elemento de entrada e o elemento de saída
+        var entrada = document.getElementById('entrada');
+        var saida = document.getElementById('saida');
+
+        // Adiciona um ouvinte de evento de entrada à entrada
+        entrada.addEventListener('input', function () {
+            // Atualiza o conteúdo do elemento de saída com o valor atual da entrada
+            saida.textContent = entrada.value;
+        });
+
+    </script>
+</body>
+
+</html>

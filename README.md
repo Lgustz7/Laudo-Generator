@@ -1,1 +1,0 @@
-# Laudo-Generator

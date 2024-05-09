@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laudo Generator</title>
+    <link rel="stylesheet" href="../src/index.css">
+</head>
+
+<body>
+
+    <section id="section-inputs">
+        <form>
+            <label for="segurado">Segurado:</label>
+            <input type="text" name="segurado" id="segurado" placeholder="Nome">
+            <br>
+            <label for="sinistro">Sinistro:</label>
+            <input type="text" name="sinistro" id="sinistro" placeholder="Sinistro">
+
+            <label for="ambiente">Trocar ambiente</label>
+            <select name="ambiente" id="ambiente">
+                <option value="Null">Selecione</option>
+                <option value="analise-virtual-tc">MASCHETTI E GIANESI (ANALISE VIRTUAL TC)</option>
+                <option value="colchao">MASCHETTI E GIANESI (APENAS COLCHÃO) EM BREVE</option>
+                <option value="falta-de-at">MASCHETTI E GIANESI (FALTA DE AT)</option>
+                <option value="mercado-livre">MASCHETTI E GIANESI (MERCADO LIVRE)</option>
+                <option value="pneu">MASCHETTI E GIANESI (PNEUS) EM BREVE</option>
+                <option value="linha-branca">MASCHETTI E GIANESI (VISTORIA LINHA BRANCA)</option>
+            </select>
+
+            <div class="check-status=-container">
+                <h2>Status:</h2>
+                <select name="status" id="status">
+                    <option value="selecione">Selecione</option>
+                    <option value="procedente">Procedente</option>
+                    <option value="improcedente">Improcedente</option>
+                </select>
+            </div>
+
+            <div class="check-descarte-container" id="descarte-container" style="display: none;">
+                <h2>Descarte de tomada elétrica?</h2>
+                <input type="radio" name="opc" id="sim">
+                <label for="sim">Sim</label> <br>
+                <input type="radio" name="opc" id="nao">
+                <label for="nao">Não</label>
+            </div>
+
+            <div class="outro-produto" id="outro-produto-container" style="display: none;">
+                <h2>Qual produto foi testado na mesma tomada?</h2>
+                <input type="text" name="outro-produto" id="outro-produto" placeholder="Opcional">
+            </div>
+
+            <div id="details-container">
+                <label for="defeito" id="defeito-label">Defeito informado:</label>
+                <input type="text" name="defeito" id="defeito">
+
+
+                <label for="avaria" id="avaria-label">Avaria (se houver)</label>
+                <input type="text" name="avaria" id="avaria">
+
+            </div>
+
+            <button type="button" onclick="funcGerarLaudo()">Gerar Laudo</button>
+        </form>
+    </section>
+
+    <section id="section-laudo">
+        <h2 id="ambiente-selecionado"></h2>
+        <p id="laudo-saida"></p>
+
+    </section>
+
+    <script>
+
+        function funcGerarLaudo() {
+            var ambienteSelecionado = document.querySelector('#ambiente-selecionado');
+            var displayLaudo = document.querySelector('#section-laudo');
+            var seguradoInput = document.getElementById('segurado');
+            var segurado = seguradoInput.value.charAt(0).toUpperCase() + seguradoInput.value.slice(1); // Primeira letra em maiúscula
+            var sinistroInput = document.getElementById('sinistro');
+            var sinistro = sinistroInput.value;
+            var ambiente = document.getElementById('ambiente').value;
+            var statusVistoria = document.getElementById('status').value;
+            var descarteSim = document.getElementById('sim').checked;
+            var descarteNao = document.getElementById('nao').checked;
+            var outroProduto = document.getElementById('outro-produto').value;
+            var defeito = document.getElementById('defeito').value;
+            var avaria = document.getElementById('avaria').value;
+            var laudo = document.getElementById('laudo-saida');
+
+            // Verifica se o número do sinistro tem 8 dígitos
+            if (sinistro.length !== 8 || isNaN(parseInt(sinistro))) {
+                alert("O número do sinistro deve conter exatamente 8 dígitos numéricos.");
+                return;
+            }
+
+            //  Vistoria Procedente (Descarte de tomada SEM TESTE COM OUTRO PRODUTO) TC/MerLi
+            if ((ambiente === 'analise-virtual-tc' || ambiente === 'mercado-livre') && statusVistoria === 'procedente' && descarteSim && (outroProduto === ' ' || outroProduto === '')) {
+                displayLaudo.style.display = 'block';
+                ambienteSelecionado.textContent = ambiente;
+                laudo.textContent = `
+                Realizada vistoria online com Sr(a). ${segurado}. Validado modelo e características do produto. Sr(a). ${segurado} relata que o produto ${defeito}. Na vistoria online, realizados testes que validam os defeitos informados pelo segurado, defeitos funcionais que impedem o funcionamento correto do produto. Sem evidências de avarias ou danos por agentes externos no aparelho. Após orientação, produto foi adequado para descarte.   Link:
+                `;
+                console.log('funfou')
+            }
+            // Vistoria Procedente (Descarte de tomada) TC/MerLi
+            else if ((ambiente === 'analise-virtual-tc' || ambiente === 'mercado-livre') && statusVistoria === 'procedente' && descarteSim) {
+                displayLaudo.style.display = 'block';
+                ambienteSelecionado.textContent = ambiente;
+                laudo.textContent = `
+                Realizada vistoria online com Sr(a). ${segurado}. Validado modelo e características do produto. Sr(a). ${segurado} relata que o produto ${defeito}. Na vistoria online, realizados testes que validam os defeitos informados pelo segurado, defeitos funcionais que impedem o funcionamento correto do produto. Sem evidências de avarias ou danos por agentes externos no aparelho. Testado tomada elétrica com outro aparelho (${outroProduto}). Após orientação, produto foi adequado para descarte.   Link:
+                `;
+            }
+
+            else if (ambiente === 'mercado-livre' && statusVistoria === 'procedente' && descarteNao) {
+                displayLaudo.style.display = 'block';
+                ambienteSelecionado.textContent = ambiente;
+                laudo.textContent = `
+                Realizada vistoria online com Sr(a) ${segurado}. Validado modelo e características do produto. Sr(a). ${segurado} relata que o produto ${defeito}. Na vistoria online, realizados testes que validam os defeitos informados pelo segurado, defeitos funcionais que impedem o funcionamento correto do produto. Sem evidências de avarias ou danos por agentes externos no aparelho.    Link:
+                `;
+            }
+
+            // Vistorias Improcedente (Avaria) TC/MerLi/AT/Linha Branca
+            else if ((ambiente === 'analise-virtual-tc' || ambiente === 'mercado-livre' || ambiente === 'linha-branca') && statusVistoria === 'improcedente') {
+                displayLaudo.style.display = 'block';
+                ambienteSelecionado.textContent = ambiente;
+                laudo.textContent = `
+                Realizada vistoria online com Sr(a). ${segurado}. Validado modelo e características do produto. Sr(a). ${segurado} relata que o produto ${defeito}. Na vistoria online, não foram identificados defeitos funcionais cobertos pelo seguro (${avaria}), produto danificado por agentes externos (Falha na conservação).
+Link: 
+                `
+            }
+            // Vistoria Procedente Falta de AT (Sem descarte)
+            else if (ambiente === 'falta-de-at' && statusVistoria === 'procedente') {
+                displayLaudo.style.display = 'block';
+                ambienteSelecionado.textContent = ambiente;
+                laudo.textContent = `
+                Realizada vistoria online com Sr(a). ${segurado}. Validado modelo e características do produto. Sr(a). ${segurado} relata que o produto ${defeito}. Na vistoria online, realizados testes que validam os defeitos informados pelo segurado, defeitos funcionais que impedem o funcionamento correto do produto. Sem evidências de avarias ou danos por agentes externos no aparelho.  Link: 
+                `;
+            }
+            // Caso for outro cenário
+            else {
+                displayLaudo.style.display = 'block';
+                laudo.textContent = 'Não';
+            }
+
+        }
+
+        // Função para atualizar a visibilidade dos campos de descarte e outro produto com base no status selecionado
+        document.getElementById('status').addEventListener('change', function () {
+            var status = this.value;
+            var descarteContainer = document.getElementById('descarte-container');
+            var outroProdutoContainer = document.getElementById('outro-produto-container');
+            var avariaLabel = document.getElementById('avaria-label');
+            var avaria = document.getElementById('avaria');
+
+            if (status === 'procedente') {
+                descarteContainer.style.display = 'block';
+                outroProdutoContainer.style.display = 'block';
+                avariaLabel.style.display = 'none';
+                avaria.style.display = 'none';
+            } else if (status === 'improcedente') {
+                descarteContainer.style.display = 'none';
+                outroProdutoContainer.style.display = 'none';
+                avariaLabel.style.display = 'block';
+                avaria.style.display = 'block';
+            } else {
+                descarteContainer.style.display = 'none';
+                outroProdutoContainer.style.display = 'none';
+                avariaLabel.style.display = 'none';
+                avaria.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
