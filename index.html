@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laudo Generator</title>
-    <link rel="stylesheet" href="../src/index.css">
+    <link rel="stylesheet" href="./src/index.css">
+    <link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c7/Assurant_logo.png"
+        type="image/x-icon">
 </head>
 
 <body>
@@ -69,6 +71,9 @@
         <h2 id="ambiente-selecionado"></h2>
         <p id="laudo-saida"></p>
 
+
+
+        <button id="execCopy"> Copiar </button>
     </section>
 
     <script>
@@ -171,6 +176,13 @@ Link:
                 avaria.style.display = 'none';
             }
         });
+
+        // Função para copiar o laudo
+        document.getElementById('execCopy').addEventListener('click', execCopy);
+        function execCopy() {
+            document.querySelector("#laudo-saida").select();
+            document.execCommand("copy");
+        }
     </script>
 </body>
 

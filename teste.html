@@ -8,22 +8,32 @@
 </head>
 
 <body>
-    <input type="text" id="entrada">
-    <p id="saida"></p>
+    <input type="text" id="input">
 
+    <button id="execCopy"> execCopy </button>
+    <button id="clipboardCopy"> clipboardCopy </button>
 
-    <input type="password" name="testes" id="teste" maxlength="8">
+    <input type="text" name="testes" id="teste" >
 
     <script>
+        document.getElementById('execCopy').addEventListener('click', execCopy);
+        function execCopy() {
+            document.querySelector("#input").select();
+            document.execCommand("copy");
+        }
+
+        // Type 2
+
+
         // Obtém o elemento de entrada e o elemento de saída
-        var entrada = document.getElementById('entrada');
-        var saida = document.getElementById('saida');
+        // var entrada = document.getElementById('entrada');
+        // var saida = document.getElementById('saida');
 
         // Adiciona um ouvinte de evento de entrada à entrada
-        entrada.addEventListener('input', function () {
-            // Atualiza o conteúdo do elemento de saída com o valor atual da entrada
-            saida.textContent = entrada.value;
-        });
+        // entrada.addEventListener('input', function () {
+        // Atualiza o conteúdo do elemento de saída com o valor atual da entrada
+        // saida.textContent = entrada.value;
+        // })
 
     </script>
 </body>
